@@ -1,0 +1,47 @@
+version: "3.8"
+
+services:
+  namenode:
+    image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+    container_name: hadoop-master
+    hostname: hadoop-master
+    environment:
+      - CLUSTER_NAME=test-cluster
+      - CORE_CONF_fs_defaultFS=hdfs://hadoop-master:8020
+    ports:
+      - "9870:9870"  # NameNode Web UI
+      - "8088:8088"  # ResourceManager UI
+    networks:
+      - hadoop-net
+    volumes:
+      - namenode-data:/hadoop/dfs/name
+
+  datanode1:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: hadoop-slave1
+    hostname: hadoop-slave1
+    environment:
+      - CORE_CONF_fs_defaultFS=hdfs://hadoop-master:8020
+    networks:
+      - hadoop-net
+    volumes:
+      - datanode1-data:/hadoop/dfs/data
+
+  datanode2:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: hadoop-slave2
+    hostname: hadoop-slave2
+    environment:
+      - CORE_CONF_fs_defaultFS=hdfs://hadoop-master:8020
+    networks:
+      - hadoop-net
+    volumes:
+      - datanode2-data:/hadoop/dfs/data
+
+networks:
+  hadoop-net:
+
+volumes:
+  namenode-data:
+  datanode1-data:
+  datanode2-data:
